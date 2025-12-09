@@ -1,0 +1,11 @@
+torch
+transformers
+datasets
+evaluate
+scikit-learn
+tqdm
+pandas
+numpy
+rich
+tree_sitter
+tree_sitter_languages
