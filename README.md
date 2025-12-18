@@ -1,18 +1,6 @@
-## 1. Install dependencies 
-
-```makefile
-make install
-```
-
-## 2.  Dataloading
+## 1. Dataloading
 
 ```makefile
 make data
-```
-
-## 3. Train Baseline
-
-```makefile
-make train-baseline
 ```
 
