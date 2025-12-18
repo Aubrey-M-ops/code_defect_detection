@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+from datetime import datetime
 
 # Add utils to path (must be before importing utils)
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -9,7 +10,7 @@ from utils.metrics import compute_classification_metrics
 from utils.log import write_to_log
 from datasets import load_dataset
 from transformers import (AutoTokenizer, AutoModelForSequenceClassification,
-                          TrainingArguments, Trainer)
+                          TrainingArguments, Trainer, TrainerCallback)
 import numpy as np
 from collections import Counter
 
@@ -23,6 +24,21 @@ MODEL_NAME = "microsoft/codebert-base"
 OUTPUT_DIR = "ckpt_codebert"
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+
+class TrainingLogCallback(TrainerCallback):
+    """Custom callback to log training metrics to file"""
+
+    def __init__(self, log_file="training_metrics.log"):
+        self.log_file = log_file
+
+    def on_log(self, args, state, control, logs=None, **kwargs):
+        """Called when trainer logs metrics"""
+        if logs is not None:
+            log_content = json.dumps(logs, indent=2)
+            write_to_log(log_content, self.log_file, append=True)
+            # Also print to console
+            # print(logs)
 
 
 def main(max_length=256, num_epochs=3, batch_size=16, lr=2e-5):
@@ -43,13 +59,13 @@ def main(max_length=256, num_epochs=3, batch_size=16, lr=2e-5):
 
         # Log tokenization result for inspection
         # NOTE: temp log
-        log_content = json.dumps({
-            "input_ids_shape": str(np.array(result["input_ids"]).shape),
-            "attention_mask_shape": str(np.array(result["attention_mask"]).shape),
-            "sample_input_ids": result["input_ids"][0][:20] if result["input_ids"] else [],
-            "sample_attention_mask": result["attention_mask"][0][:20] if result["attention_mask"] else []
-        }, indent=2)
-        write_to_log(log_content, "preprocess_tokenizer.log")
+        # log_content = json.dumps({
+        #     "input_ids_shape": str(np.array(result["input_ids"]).shape),
+        #     "attention_mask_shape": str(np.array(result["attention_mask"]).shape),
+        #     "sample_input_ids": result["input_ids"][0][:20] if result["input_ids"] else [],
+        #     "sample_attention_mask": result["attention_mask"][0][:20] if result["attention_mask"] else []
+        # }, indent=2)
+        # write_to_log(log_content, "preprocess_tokenizer.log")
 
         return result
 
@@ -126,10 +142,19 @@ def main(max_length=256, num_epochs=3, batch_size=16, lr=2e-5):
         num_train_epochs=num_epochs,
         per_device_train_batch_size=batch_size,
         per_device_eval_batch_size=batch_size,
+        #Gradient accumulation => a larger effective batch size.
+        gradient_accumulation_steps=2,
+
+        # warmup + scheduler + gradient clipping (increase stability)
+        # for BERT/CodeBERT
+        warmup_ratio=0.1,
+        lr_scheduler_type="linear",
         weight_decay=0.01,
+        max_grad_norm=1.0,
+
         logging_steps=50,
         load_best_model_at_end=True,
-        metric_for_best_model="f1",   # or mcc
+        metric_for_best_model="f1",
         greater_is_better=True,
         save_total_limit=2
     )
@@ -140,12 +165,33 @@ def main(max_length=256, num_epochs=3, batch_size=16, lr=2e-5):
         train_dataset=ds_tok["train"],
         eval_dataset=ds_tok["validation"],
         tokenizer=tok,
-        compute_metrics=compute_metrics
+        compute_metrics=compute_metrics,
+        callbacks=[TrainingLogCallback(log_file="training_metrics.log")]
     )
 
     trainer.train()
     print("Eval on test:")
-    print(trainer.evaluate(ds_tok["test"]))
+    test_results = trainer.evaluate(ds_tok["test"])
+    print(test_results)
+
+    ################################## PRINT TO LOG >>> ##################################
+
+    # Save training args and results to log file with timestamp
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    result_log_file = f"result_{timestamp}.log"
+
+
+    # Create result object
+    result_object = {
+        "timestamp": timestamp,
+        "training_results": test_results
+    }
+
+    # Write to log file
+    log_content = json.dumps(result_object, indent=2, ensure_ascii=False)
+    write_to_log(log_content, result_log_file, append=False)
+    print(f"\nTraining results saved to log/{result_log_file}")
+    ################################################################################### 
 
 
 if __name__ == "__main__":

@@ -1,2 +1,10 @@
 /data/raw
 /ckpt_codebert
+/venv
+/log
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
