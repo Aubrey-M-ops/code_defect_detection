@@ -174,7 +174,7 @@ def main(max_length=256, num_epochs=3, batch_size=16, lr=2e-5):
     test_results = trainer.evaluate(ds_tok["test"])
     print(test_results)
 
-    ################################## PRINT TO LOG >>> ##################################
+    ################################## PRINT TO LOG ##################################
 
     # Save training args and results to log file with timestamp
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
