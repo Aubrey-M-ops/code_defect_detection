@@ -51,13 +51,42 @@ make train-baseline
 
 ### Augment Text ( AST Sequence + Code)
 
-```json
-{
-    AST_TOKENS: "translation_unit function_definition storage_class_specifier static type_identifier ERROR identifier function_declarator identifier parameter_list ( parameter_declaration type_identifier pointer_declarator * identifier ) compound_statement { declaration type_identifier ......",
-    CODE: "\nstatic av_cold int ffat_close_encoder(AVCodecContext *avctx)\n\n{\n\n    ATDecodeContext *at = avctx->priv_data;\n\n    AudioConverterDispose(at->converter);\n\n    av_frame_unref(&at->new_in_frame);\n\n    av_frame_unref(&at->in_frame);\n\n    ff_af_queue_close(&at->afq);\n\n    return 0;\n\n}\n"
-}
+下面是**准确、学术风格的英文翻译**，可以直接用于你的 **report / paper / PPT**：
+
+---
+
+### **Old Format**
+
+```text
+[CODE]
+<code>
+[AST]
+function_definition assignment_expression binary_expression binary_expression assignment_expression call_expression if_statement unary_expression return_statement call_expression for_statement assignment_expression binary_expression assignment_expression call_expression if_statement unary_expression assignment_expression break_statement if_statement assignment_expression call_expression return_statement
 ```
 
+---
+
+### **New Format (Structured)**
+
+```text
+[CODE]
+<code>
+[AST-CF] if_statement for_statement if_statement if_statement
+[AST-OP] assignment_expression assignment_expression call_expression return_statement call_expression assignment_expression assignment_expression call_expression assignment_expression break_statement assignment_expression call_expression return_statement
+[AST-STATS] binary_expression:3 unary_expression:2
+```
+
+---
+
+### **3. Performance Comparison**
+
+| Metric                      | Old Method                           | New Method                           | Improvement               |
+| --------------------------- | ------------------------------------ | ------------------------------------ | ------------------------- |
+| **Control-flow nodes**      | Mixed together                       | Explicitly separated (4 nodes)       | ✅ Clear semantics         |
+| **Noisy nodes**             | Includes `function_definition`, etc. | Removed                              | ✅ Reduced interference    |
+| **Repeated expressions**    | Listed individually                  | Aggregated as counts                 | ✅ Information compression |
+| **Structural organization** | Single flat sequence                 | Three-part structure                 | ✅ Easier to learn         |
+| **Tunable parameters**      | Only `max_nodes`                     | `max_control_flow`, `max_operations` | ✅ More flexible control   |
 
 
 ## RESULT
