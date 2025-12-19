@@ -7,5 +7,5 @@ tqdm
 pandas
 numpy
 rich
-tree_sitter
+tree_sitter<0.21.0
 tree_sitter_languages

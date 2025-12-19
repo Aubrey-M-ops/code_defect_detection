@@ -1,22 +1,26 @@
 .PHONY: help data install train clean test
 
+# Use Python from venv if available, otherwise system python3
+PYTHON := $(shell if [ -d venv ]; then echo ./venv/bin/python; else echo python3; fi)
+PIP := $(shell if [ -d venv ]; then echo ./venv/bin/pip; else echo pip; fi)
+
 data:
 	@echo "Loading dataset..."
-	python3 data/dataset_loading.py
+	$(PYTHON) data/dataset_loading.py
 	@echo "Dataset loaded successfully!"
 
 install:
 	@echo "Installing dependencies..."
-	pip install -r requirements.txt
+	$(PIP) install -r requirements.txt
 	@echo "Dependencies installed!"
 
 train-baseline:
 	@echo "Training CodeBERT model..."
-	python3 models/train_codebert.py
+	$(PYTHON) models/train_codebert.py
 
 train-ast:
 	@echo "Training CodeBERT+AST model..."
-	python3 models/train_codebert_ast.py
+	$(PYTHON) models/train_codebert_ast.py
 
 
 clean-data:
