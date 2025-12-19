@@ -51,8 +51,6 @@ make train-baseline
 
 ### Augment Text ( AST Sequence + Code)
 
-下面是**准确、学术风格的英文翻译**，可以直接用于你的 **report / paper / PPT**：
-
 ---
 
 ### **Old Format**
