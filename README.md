@@ -18,6 +18,12 @@ make data
 make train-baseline
 ```
 
+### 4. Train AST Augment CodeBert
+
+```makefile
+make train-ast
+```
+
 ## 💡 AST OPTIMIZER
 
 ### Code 👉 AST Structure
