@@ -31,7 +31,7 @@ STATS_ONLY_NODES = {
 }
 
 # Use pre-compiled language libraries for AST parsing
-parser = get_parser('c')  # For simplicity, we treat it as C code
+parser = get_parser('c')  # For simplicity, treat it as C code
 
 def traverse_for_features(node, features):
     node_type = node.type
@@ -40,7 +40,7 @@ def traverse_for_features(node, features):
     if node_type in CRITICAL_CONTROL_FLOW:
         features['control_flow'].append(node_type)
 
-    # Collect high-risk operations (preserve order, but limit count)
+    # Collect high-risk operations
     if node_type in HIGH_RISK_OPERATIONS:
         features['operations'].append(node_type)
 
@@ -82,7 +82,6 @@ def extract_ast_features(code: str, max_control_flow: int = 20, max_operations: 
 
 def make_augmented_text(code: str, max_control_flow: int = 20, max_operations: int = 30):
     """
-    Create augmented text with lightweight AST features.
     Format: [CODE] + code + [AST-CF] + control_flow + [AST-OP] + operations + [AST-STATS] + stats
     """
     features = extract_ast_features(code, max_control_flow, max_operations)

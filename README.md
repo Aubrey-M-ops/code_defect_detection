@@ -101,3 +101,30 @@ The running results are logged in `reults/baseline_1.json`, `reults/baseline_2.j
 | **F1**    | 0.5745 | 0.5928 | 0.5827 | **0.5833 ± 0.0092** |
 | **MCC**   | 0.2578 | 0.2494 | 0.2610 | **0.2560 ± 0.0060** |
 | Loss      | 0.6190 | 0.6054 | 0.6143 | **0.6129 ± 0.0069** |
+
+
+### AST OPTIMIZATION - CODEBERT + AST STRUCTURE【 Fine-tune】
+
+The running results are logged in `reults/ast_1.json`, `reults/ast_2.json`, `reults/ast_3.json`
+
+| Metric    | Run 1  | Run 2  | Run 3  | **Mean ± Std**      |
+| --------- | ------ | ------ | ------ | ------------------- |
+| Accuracy  | 0.6402 | 0.6398 | 0.6409 | **0.6403 ± 0.0005** |
+| Precision | 0.6187 | 0.6159 | 0.6130 | **0.6159 ± 0.0023** |
+| Recall    | 0.5649 | 0.5737 | 0.5920 | **0.5769 ± 0.0113** |
+| **F1**    | 0.5906 | 0.5941 | 0.6024 | **0.5957 ± 0.0049** |
+| **MCC**   | 0.2717 | 0.2717 | 0.2753 | **0.2729 ± 0.0017** |
+| Loss      | 0.6299 | 0.6197 | 0.6215 | **0.6237 ± 0.0045** |
+
+### Performance Comparison and Improvement Analysis
+
+Based on the experimental results above, we observe a **consistent and meaningful improvement** after introducing the `structured AST information` into the CodeBERT fine-tuning process.
+
+#### Overall Performance Gain
+Compared with the baseline CodeBERT model, the **AST-optimized model achieves better performance across all key evaluation metrics**, especially those that are more reliable under class imbalance.
+
+- **F1-score** improves from **0.5833 ± 0.0092** to **0.5957 ± 0.0049**, showing a clear and stable gain.
+- **MCC** increases from **0.2560 ± 0.0060** to **0.2729 ± 0.0017**, indicating a more balanced and robust classification performance.
+- **Accuracy** also improves from **0.6321 ± 0.0042** to **0.6403 ± 0.0005**, while maintaining low variance across runs.
+
+

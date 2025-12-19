@@ -1,0 +1,15 @@
+{
+  "timestamp": "20251218_215902",
+  "training_results": {
+    "eval_loss": 0.6214504241943359,
+    "eval_accuracy": 0.6409224011713031,
+    "eval_precision": 0.613036303630363,
+    "eval_recall": 0.5920318725099601,
+    "eval_f1": 0.6023510336441021,
+    "eval_mcc": 0.27534395421873775,
+    "eval_runtime": 3.882,
+    "eval_samples_per_second": 703.759,
+    "eval_steps_per_second": 44.049,
+    "epoch": 3.0
+  }
+}
