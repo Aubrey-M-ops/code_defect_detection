@@ -34,12 +34,6 @@ STATS_ONLY_NODES = {
 parser = get_parser('c')  # For simplicity, we treat it as C code
 
 def traverse_for_features(node, features):
-    """
-    Traverse AST and collect:
-    1. Critical control flow nodes (as sequence)
-    2. Statistics of high-risk operations
-    3. Overall complexity metrics
-    """
     node_type = node.type
 
     # Collect critical control flow nodes (preserve order)
@@ -60,17 +54,6 @@ def traverse_for_features(node, features):
 
 
 def extract_ast_features(code: str, max_control_flow: int = 20, max_operations: int = 30):
-    """
-    Extract lightweight AST features from code.
-
-    Args:
-        code: Source code string
-        max_control_flow: Maximum number of control flow nodes to keep
-        max_operations: Maximum number of operation nodes to keep
-
-    Returns:
-        Dictionary with AST features
-    """
     try:
         tree = parser.parse(code.encode("utf8"))
         root = tree.root_node
@@ -107,7 +90,7 @@ def make_augmented_text(code: str, max_control_flow: int = 20, max_operations: i
     # Build compact AST representation
     parts = [f"[CODE]\n{code}"]
 
-    # Add control flow sequence (most important for defects)
+    # Add control flow sequence 
     if features['control_flow']:
         cf_str = " ".join(features['control_flow'])
         parts.append(f"\n[AST-CF] {cf_str}")

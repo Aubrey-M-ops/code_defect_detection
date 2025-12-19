@@ -22,6 +22,10 @@ train-ast:
 	@echo "Training CodeBERT+AST model..."
 	$(PYTHON) models/train_codebert_ast.py
 
+ablation:
+	@echo "Running ablation study on input length..."
+	bash experiments/run_ablation_length.sh
+	@echo "Ablation study completed!"
 
 clean-data:
 	@echo "Cleaning data directory..."
